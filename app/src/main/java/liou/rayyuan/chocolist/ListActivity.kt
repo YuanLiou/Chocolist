@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import liou.rayyuan.chocolist.adapter.VideoItemClickListener
 import liou.rayyuan.chocolist.adapter.VideoListAdapter
 import liou.rayyuan.chocolist.data.APIManager
 import liou.rayyuan.chocolist.data.entity.Video
@@ -17,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ListActivity : AppCompatActivity() {
+class ListActivity : AppCompatActivity(), VideoItemClickListener {
     private val apiManager = APIManager()
     private val videoAdapter = VideoListAdapter()
 
@@ -35,6 +36,7 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
+        videoAdapter.videoItemClickListener = this
         with(videoList) {
             setHasFixedSize(true)
             adapter = videoAdapter
@@ -91,6 +93,12 @@ class ListActivity : AppCompatActivity() {
             }
         }
     }
+
+    //region VideoItemClickListener
+    override fun onVideoItemClicked(video: Video) {
+        Log.i("ListActivity", "Video item clicked: ${video.name}")
+    }
+    //endregion
 
     private fun <T: View> Activity.bindView(@IdRes resId: Int): Lazy<T> = lazy {
         findViewById<T>(resId)

@@ -11,7 +11,7 @@ import liou.rayyuan.chocolist.data.entity.Video
 import liou.rayyuan.chocolist.viewmodel.VideoListItemViewModel
 
 class VideoListAdapter: RecyclerView.Adapter<VideoListAdapter.VideoItemViewHolder>() {
-
+    var videoItemClickListener: VideoItemClickListener? = null
     private val videos = mutableListOf<Video>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoItemViewHolder {
@@ -46,10 +46,18 @@ class VideoListAdapter: RecyclerView.Adapter<VideoListAdapter.VideoItemViewHolde
         notifyDataSetChanged()
     }
 
-    class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal val videoThumb: SimpleDraweeView = itemView.findViewById(R.id.video_item_thumb)
         internal val videoTitle: TextView = itemView.findViewById(R.id.video_item_title)
         internal val videoCreateTime: TextView = itemView.findViewById(R.id.video_item_created_at_time)
         internal val videoRating: TextView = itemView.findViewById(R.id.video_item_rating)
+
+        init {
+            itemView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    videoItemClickListener?.onVideoItemClicked(videos[adapterPosition])
+                }
+            }
+        }
     }
 }
