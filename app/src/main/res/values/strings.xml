@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Chocolist</string>
+    <string name="title_created_at">出版日期: %1$s </string>
+    <string name="title_rating">評分: %1$s </string>
 </resources>

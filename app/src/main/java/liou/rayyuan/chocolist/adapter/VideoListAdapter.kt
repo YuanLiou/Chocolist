@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import liou.rayyuan.chocolist.R
 import liou.rayyuan.chocolist.data.entity.Video
+import liou.rayyuan.chocolist.viewmodel.VideoListItemViewModel
 
 class VideoListAdapter: RecyclerView.Adapter<VideoListAdapter.VideoItemViewHolder>() {
 
@@ -27,10 +28,11 @@ class VideoListAdapter: RecyclerView.Adapter<VideoListAdapter.VideoItemViewHolde
 
         val index = holder.adapterPosition
         val video = videos[index]
+        val viewModel = VideoListItemViewModel(video)
         holder.videoThumb.setImageURI(video.thumb)
         holder.videoTitle.text = video.name
-        holder.videoCreateTime.text = video.createdAt
-        holder.videoRating.text = video.rating.toString()
+        holder.videoCreateTime.text = viewModel.getPublishDate(holder.videoCreateTime.context)
+        holder.videoRating.text = viewModel.getRatingScore(holder.videoRating.context)
     }
 
     fun addVideos(videos: List<Video>) {

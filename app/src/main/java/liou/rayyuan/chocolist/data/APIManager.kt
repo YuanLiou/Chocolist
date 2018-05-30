@@ -1,7 +1,9 @@
 package liou.rayyuan.chocolist.data
 
+import com.google.gson.GsonBuilder
 import liou.rayyuan.chocolist.BuildConfig
 import liou.rayyuan.chocolist.data.entity.VideoList
+import liou.rayyuan.chocolist.utils.DateUtils
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -29,9 +31,13 @@ class APIManager {
                 .retryOnConnectionFailure(true)
                 .build()
 
+        val gson = GsonBuilder()
+                .setDateFormat(DateUtils.datePattern)
+                .create()
+
         val retrofit = Retrofit.Builder()
                 .baseUrl(baseURL + apiVersion)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(httpClient)
                 .build()
 
