@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/item_list_background"
+    >
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/video_item_thumb"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        app:fadeDuration="200"
+        app:actualImageScaleType="fitCenter"
+        app:viewAspectRatio="0.7"
+        tools:background="@tools:sample/backgrounds/scenic"
+        />
+
+    <TextView
+        android:id="@+id/video_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/basic_item_text_to_thumb_padding"
+        android:layout_toEndOf="@id/video_item_thumb"
+        android:layout_alignParentEnd="true"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="15sp"
+        android:includeFontPadding="false"
+        android:textColor="@color/gray_54"
+        tools:text="致我們單純的小美好"
+        />
+
+    <TextView
+        android:id="@+id/video_item_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/video_item_thumb"
+        android:layout_below="@id/video_item_title"
+        android:paddingStart="@dimen/basic_item_text_to_thumb_padding"
+        android:paddingTop="8dp"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textColor="@color/gray_54"
+        tools:text="評分：4.0647"
+        />
+
+    <TextView
+        android:id="@+id/video_item_created_at_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/video_item_thumb"
+        android:layout_below="@id/video_item_rating"
+        android:paddingStart="@dimen/basic_item_text_to_thumb_padding"
+        android:paddingTop="8dp"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/gray_54"
+        android:textSize="12sp"
+        tools:text="出版日期：2017-10-21"
+        />
+
+</RelativeLayout>
