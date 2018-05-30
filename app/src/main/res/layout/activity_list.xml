@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:background="@color/gray_F7"
     tools:context=".ListActivity"
     >
@@ -16,13 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="25dp"
+        android:paddingBottom="25dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/video_list_item"
-        tools:visibility="gone"
+        tools:visibility="visible"
         />
 
     <ProgressBar
