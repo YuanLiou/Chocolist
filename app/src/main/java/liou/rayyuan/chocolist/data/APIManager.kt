@@ -16,6 +16,8 @@ class APIManager {
     private val baseURL = "http://www.mocky.io/"
     private val apiVersion = "v2/"
 
+    val httpClient: OkHttpClient
+
     init {
         val logInterceptor = HttpLoggingInterceptor().apply {
             if (BuildConfig.DEBUG) {
@@ -24,7 +26,7 @@ class APIManager {
             }
         }
 
-        val httpClient = OkHttpClient.Builder()
+        httpClient = OkHttpClient.Builder()
                 .addInterceptor(logInterceptor)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
