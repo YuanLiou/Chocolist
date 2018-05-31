@@ -15,10 +15,13 @@ data class VideoList(
 @Entity(tableName = "videos")
 @Parcelize
 data class Video(
-        @PrimaryKey @ColumnInfo(name = "drama_id") @SerializedName("drama_id") val dramaId: String,
-        @SerializedName("name") val name: String,
-        @ColumnInfo(name = "total_views") @SerializedName("total_views") val totalViews: Int,
-        @Ignore @SerializedName("created_at") val createdAt: Date,
-        @SerializedName("thumb") val thumb: String,
-        @SerializedName("rating") val rating: Double
-) : Parcelable
+        @PrimaryKey @ColumnInfo(name = "drama_id") @SerializedName("drama_id") var dramaId: String,
+        @SerializedName("name") var name: String?,
+        @ColumnInfo(name = "total_views") @SerializedName("total_views") var totalViews: Int?,
+        @Ignore @SerializedName("created_at") var createdAt: Date?,
+        @SerializedName("thumb") var thumb: String?,
+        @SerializedName("rating") var rating: Double?
+) : Parcelable {
+    // DIRTY HACK:: if Room, Parcelize and kapt needs an empty constructor. Make that for it.
+    constructor(): this("", "", 0, Date(), "", 0.0)
+}

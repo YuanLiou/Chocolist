@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -53,11 +54,11 @@ dependencies {
 
     // Database
     implementation "android.arch.persistence.room:runtime:$room_version"
-    // NOTE THAT:: use `annotationProcessor` replace the `kapt`
-    // because of a bug about gradle can not sync with Kotlin 1.2.3X or above
-    // within AS 3.1.X or 3.2 canaries. issue refer to this:
+    // NOTE THAT:: kapt will throw Warning through building
+    // because of a bug about gradle can not find kapt generated source path
+    // with Kotlin 1.2.3X or above and AS 3.1.X or 3.2 canaries. issue refer to this:
     // https://issuetracker.google.com/issues/74537216
-    annotationProcessor "android.arch.persistence.room:compiler:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
 
     testImplementation 'junit:junit:4.12'
