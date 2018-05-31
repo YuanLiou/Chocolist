@@ -27,4 +27,6 @@ interface VideoDao {
     """)
     fun findVideosContainsWords(keyword: String): List<Video>
 
+    @Query("SELECT * FROM videos WHERE drama_id = :dramaId ")
+    fun queryVideo(dramaId: Int): Video
 }

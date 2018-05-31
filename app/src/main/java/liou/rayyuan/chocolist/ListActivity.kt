@@ -11,16 +11,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import liou.rayyuan.chocolist.adapter.VideoItemClickListener
 import liou.rayyuan.chocolist.adapter.VideoListAdapter
-import liou.rayyuan.chocolist.data.APIManager
+import liou.rayyuan.chocolist.data.VideoRepository
+import liou.rayyuan.chocolist.data.VideoRepositoryListener
 import liou.rayyuan.chocolist.data.entity.Video
-import liou.rayyuan.chocolist.data.entity.VideoList
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class ListActivity : AppCompatActivity(), VideoItemClickListener {
-    private val apiManager = APIManager()
+class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositoryListener {
     private val videoAdapter = VideoListAdapter()
+    private lateinit var videoRepository: VideoRepository
 
     private sealed class ViewState {
         class Success(val videos: List<Video>): ViewState()
@@ -36,6 +33,12 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
+        videoRepository = VideoRepository(
+                (application as ChocolistApplication).apiManager,
+                (application as ChocolistApplication).databaseManager,
+                this
+        )
+
         videoAdapter.videoItemClickListener = this
         with(videoList) {
             setHasFixedSize(true)
@@ -45,31 +48,15 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener {
         fetchData()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        videoRepository.release()
+    }
+
     private fun fetchData() {
         setVideoListState(ViewState.Loading)
         // fetch data
-        apiManager.getVideoList().enqueue(object : Callback<VideoList> {
-            override fun onResponse(call: Call<VideoList>?, response: Response<VideoList>?) {
-                response?.run {
-                    if (!isSuccessful) {
-                        setVideoListState(ViewState.ErrorOccurred("Response is not succeed."))
-                        return
-                    }
-                    body()
-                }?.apply {
-                    if (data.isNotEmpty()) {
-                        setVideoListState(ViewState.Success(data))
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<VideoList>?, throwable: Throwable?) {
-                Log.e("ListActivity", Log.getStackTraceString(throwable))
-                throwable?.run {
-                    setVideoListState(ViewState.ErrorOccurred(localizedMessage))
-                }
-            }
-        })
+        videoRepository.prepareVideos()
     }
 
     private fun setVideoListState(viewState: ViewState) {
@@ -97,6 +84,16 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener {
     //region VideoItemClickListener
     override fun onVideoItemClicked(video: Video) {
         Log.i("ListActivity", "Video item clicked: ${video.name}")
+    }
+    //endregion
+
+    //region VideoRepositoryListener
+    override fun onVideoFetched(videos: List<Video>) {
+        setVideoListState(ViewState.Success(videos))
+    }
+
+    override fun onVideoFetchError(message: String) {
+        setVideoListState(ViewState.ErrorOccurred(message))
     }
     //endregion
 

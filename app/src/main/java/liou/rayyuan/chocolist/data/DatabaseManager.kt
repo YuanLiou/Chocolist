@@ -13,10 +13,10 @@ abstract class DatabaseManager: RoomDatabase() {
     abstract fun videoDao(): VideoDao
 
     companion object {
-        const val databaseName = "chocolist_ab"
+        private const val databaseName = "chocolist_db"
         private var instance: DatabaseManager? = null
 
-        fun getInstance(context: Context): DatabaseManager? {
+        fun getInstance(context: Context): DatabaseManager {
             if (instance == null) {
                 synchronized(DatabaseManager::class) {
                     instance = Room.databaseBuilder(context.applicationContext,
@@ -25,7 +25,7 @@ abstract class DatabaseManager: RoomDatabase() {
                 }
             }
 
-            return instance
+            return instance!!
         }
 
         fun releaseInstance() {

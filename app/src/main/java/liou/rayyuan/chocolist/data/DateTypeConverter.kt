@@ -16,6 +16,7 @@ class DateTypeConverter {
     @TypeConverter
     fun convertDateToString(date: Date): String {
         val dateFormat = SimpleDateFormat(DateUtils.datePattern, DateUtils.locale)
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         return dateFormat.format(date)
     }
 
