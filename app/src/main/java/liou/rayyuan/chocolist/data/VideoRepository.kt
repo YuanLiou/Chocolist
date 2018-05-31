@@ -38,6 +38,30 @@ class VideoRepository(private val apiManager: APIManager, private val databaseMa
         backgroundHandler?.post(task)
     }
 
+    fun findVideosByName(name: String) {
+        val task = Runnable {
+            val videos = databaseManager.videoDao().findVideosContainsWords(name)
+
+            mainHandler.post({
+                listener.onVideoFetched(videos)
+            })
+        }
+
+        backgroundHandler?.post(task)
+    }
+
+    fun findVideoById(dramaId: Int) {
+        val task = Runnable {
+            val video = databaseManager.videoDao().queryVideo(dramaId)
+
+            mainHandler.post({
+                listener.onVideoFetched(listOf(video))
+            })
+        }
+
+        backgroundHandler?.post(task)
+    }
+
     private fun queryVideoFromLocal() {
         val task = Runnable {
             val videos = databaseManager.videoDao().getAllCachedVideos()

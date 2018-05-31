@@ -67,7 +67,7 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
                 videoList.visibility = View.GONE
             }
             is ViewState.Success -> {
-                videoAdapter.addVideos(viewState.videos)
+                videoAdapter.submitVideos(viewState.videos)
                 videoProgressBar.visibility = View.GONE
                 videoStateInfoText.visibility  = View.GONE
                 videoList.visibility = View.VISIBLE
