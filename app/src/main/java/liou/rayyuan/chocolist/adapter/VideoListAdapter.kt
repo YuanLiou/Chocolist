@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import liou.rayyuan.chocolist.R
 import liou.rayyuan.chocolist.data.entity.Video
-import liou.rayyuan.chocolist.viewmodel.VideoListItemViewModel
+import liou.rayyuan.chocolist.viewmodel.VideoItemViewModel
 
 class VideoListAdapter: ListAdapter<Video, VideoListAdapter.VideoItemViewHolder>(videoDiffCallback) {
 
@@ -40,7 +40,7 @@ class VideoListAdapter: ListAdapter<Video, VideoListAdapter.VideoItemViewHolder>
 
         val index = holder.adapterPosition
         val video = getItem(index)
-        val viewModel = VideoListItemViewModel(video)
+        val viewModel = VideoItemViewModel(video)
         holder.videoThumb.setImageURI(video.thumb)
         holder.videoTitle.text = video.name
         holder.videoCreateTime.text = viewModel.getPublishDate(holder.videoCreateTime.context)
