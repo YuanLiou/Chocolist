@@ -1,6 +1,7 @@
 package liou.rayyuan.chocolist
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
@@ -8,7 +9,6 @@ import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -151,7 +151,11 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
 
     //region VideoItemClickListener
     override fun onVideoItemClicked(video: Video) {
-        Log.i("ListActivity", "Video item clicked: ${video.name}")
+        val intent = Intent(this, DetailActivity::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable(DetailActivity.targetDramaKey, video)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
     //endregion
 
