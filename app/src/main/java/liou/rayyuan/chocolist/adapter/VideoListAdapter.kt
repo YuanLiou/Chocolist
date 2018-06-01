@@ -52,7 +52,7 @@ class VideoListAdapter: ListAdapter<Video, VideoListAdapter.VideoItemViewHolder>
     }
 
     fun clean() {
-        submitList(emptyList())
+        submitList(null)
     }
 
     inner class VideoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -3,4 +3,5 @@
     <string name="title_created_at">出版日期: %1$s </string>
     <string name="title_rating">評分: %1$s </string>
     <string name="search_bar_hint">關鍵字過濾</string>
+    <string name="search_no_result">沒找到東西的喔</string>
 </resources>

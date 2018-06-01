@@ -4,9 +4,13 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import liou.rayyuan.chocolist.adapter.VideoItemClickListener
@@ -28,10 +32,14 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
     private val videoList: RecyclerView by bindView(R.id.activity_list_videos)
     private val videoProgressBar: ProgressBar by bindView(R.id.activity_list_progress_bar)
     private val videoStateInfoText: TextView by bindView(R.id.activity_list_state_text)
+    private val videoFilterEditText: EditText by bindView(R.id.activity_list_search_edittext)
+    private val videoFilterCancelImage: AppCompatImageView by bindView(R.id.activity_list_search_cancel_image)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
+
+        videoFilterEditText.isEnabled = false
 
         videoRepository = VideoRepository(
                 (application as ChocolistApplication).apiManager,
@@ -40,6 +48,10 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
         )
 
         videoAdapter.videoItemClickListener = this
+        videoFilterCancelImage.setOnClickListener {
+            videoFilterEditText.setText("")
+        }
+
         with(videoList) {
             setHasFixedSize(true)
             adapter = videoAdapter
@@ -48,9 +60,52 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
         fetchData()
     }
 
+    // Text Change Listener
+    private val textChangeListener = object : TextWatcher {
+        override fun afterTextChanged(editable: Editable?) {
+        }
+
+        override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            charSequence?.run {
+                if (length > 0) {
+                    if (isNotBlank()) {
+                        videoRepository.findVideosByName(this.toString())
+                        videoFilterCancelImage.visibility = View.VISIBLE
+                    }
+
+                } else {
+                    videoFilterCancelImage.visibility = View.INVISIBLE
+                    resetList()
+                }
+            }
+        }
+    }
+    // End Text Change Listener
+
+    override fun onResume() {
+        super.onResume()
+        videoFilterEditText.addTextChangedListener(textChangeListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoFilterEditText.removeTextChangedListener(textChangeListener)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         videoRepository.release()
+    }
+
+    override fun onBackPressed() {
+        if (videoFilterEditText.text.isNotEmpty()) {
+            videoFilterEditText.setText("")
+        } else {
+            super.onBackPressed()
+        }
     }
 
     private fun fetchData() {
@@ -67,10 +122,17 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
                 videoList.visibility = View.GONE
             }
             is ViewState.Success -> {
-                videoAdapter.submitVideos(viewState.videos)
+                if (viewState.videos.isNotEmpty()) {
+                    videoAdapter.submitVideos(viewState.videos)
+                    videoStateInfoText.visibility = View.GONE
+                    videoList.visibility = View.VISIBLE
+                } else {
+                    videoStateInfoText.text = getString(R.string.search_no_result)
+                    videoStateInfoText.visibility = View.VISIBLE
+                    videoList.visibility = View.GONE
+                }
                 videoProgressBar.visibility = View.GONE
-                videoStateInfoText.visibility  = View.GONE
-                videoList.visibility = View.VISIBLE
+                videoFilterEditText.isEnabled = true
             }
             is ViewState.ErrorOccurred -> {
                 videoStateInfoText.text = viewState.message
@@ -79,6 +141,12 @@ class ListActivity : AppCompatActivity(), VideoItemClickListener, VideoRepositor
                 videoList.visibility = View.GONE
             }
         }
+    }
+
+    private fun resetList() {
+        videoList.smoothScrollToPosition(0)
+        videoAdapter.clean()
+        videoRepository.prepareVideos()
     }
 
     //region VideoItemClickListener

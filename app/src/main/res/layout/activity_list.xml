@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
     android:background="@color/gray_F7"
     tools:context=".ListActivity"
     >
@@ -13,7 +14,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_list_videos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="25dp"
         android:paddingBottom="@dimen/basic_bottom_toolbar_height"
         android:paddingStart="8dp"
@@ -23,7 +24,7 @@
         android:visibility="gone"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/video_list_item"
-        tools:visibility="visible"
+        tools:visibility="invisible"
         />
 
     <ProgressBar
@@ -45,6 +46,8 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:visibility="gone"
+        android:textSize="18sp"
+        android:drawableTop="@drawable/ic_outline_info_24px"
         tools:visibility="visible"
         tools:text="@tools:sample/lorem/random"
         />
@@ -91,7 +94,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColorHint="#DEB7C2"
-            android:textColor="#F8CDD8"
+            android:textColor="@color/pure_white"
             android:background="@drawable/rounded_edittext"
             android:hint="@string/search_bar_hint"
             tools:text="@tools:sample/lorem/random"
@@ -105,6 +108,7 @@
             android:layout_alignBottom="@id/activity_list_search_edittext"
             android:layout_alignEnd="@id/activity_list_search_edittext"
             android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:visibility="gone"
             app:tint="@color/pure_white"
             app:srcCompat="@drawable/ic_sharp_cancel_24px"
