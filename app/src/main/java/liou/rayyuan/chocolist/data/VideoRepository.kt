@@ -55,7 +55,11 @@ class VideoRepository(private val apiManager: APIManager, private val databaseMa
             val video = databaseManager.videoDao().queryVideo(dramaId)
 
             mainHandler.post({
-                listener.onVideoFetched(listOf(video))
+                video?.let {
+                    listener.onVideoFetched(listOf(it))
+                } ?: run {
+                    listener.onVideoFetchError("Video not found.")
+                }
             })
         }
 

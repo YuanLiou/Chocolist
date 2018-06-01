@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.constraint.Group
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -13,11 +14,13 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import liou.rayyuan.chocolist.data.VideoRepository
+import liou.rayyuan.chocolist.data.VideoRepositoryListener
 import liou.rayyuan.chocolist.data.entity.Video
 import liou.rayyuan.chocolist.utils.DeepLinkHelper
 import liou.rayyuan.chocolist.viewmodel.VideoItemViewModel
 
-class DetailActivity: AppCompatActivity() {
+class DetailActivity: AppCompatActivity(), VideoRepositoryListener {
     companion object {
         const val targetDramaKey = "target-drama-key"
     }
@@ -42,19 +45,37 @@ class DetailActivity: AppCompatActivity() {
     private val errorText: TextView by bindView(R.id.activity_detail_status_text)
     private val errorButton: Button by bindView(R.id.activity_detail_retry_button)
 
+    private lateinit var videoRepository: VideoRepository
+
     private var drama: Video? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
+        videoRepository = VideoRepository(
+                (application as ChocolistApplication).apiManager,
+                (application as ChocolistApplication).databaseManager,
+                this)
+
+        errorButton.setOnClickListener {
+            finish()
+        }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         intent?.let {
             if (DeepLinkHelper.canHandle(it)) {
                 // is Deep link
                 val partialVideoData = DeepLinkHelper.targetVideo(it)
                 partialVideoData?.let {
-                    // Should Fetch Detailed Info
-//                    setDetailPageState(ViewState.ReadyToShow(it))
+
+                    val dramaIdString = it.dramaId.toIntOrNull()
+                    dramaIdString?.run {
+                        videoRepository.findVideoById(this)
+                    } ?: run {
+                        setDetailPageState(ViewState.ErrorOccurred("Video not found."))
+                    }
                 }
             } else {
                 // is Normal Intent
@@ -69,6 +90,21 @@ class DetailActivity: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        videoRepository.release()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item?.let {
+            if (it.itemId == android.R.id.home) {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setDetailPageState(viewState: ViewState) {
@@ -91,9 +127,21 @@ class DetailActivity: AppCompatActivity() {
             is ViewState.ErrorOccurred -> {
                 errorUIGroup.visibility = View.VISIBLE
                 mainUIGroup.visibility = View.GONE
+
+                errorText.text = viewState.message
             }
         }
     }
+
+    //region VideoRepositoryListener
+    override fun onVideoFetched(videos: List<Video>) {
+        setDetailPageState(ViewState.ReadyToShow(videos.first()))
+    }
+
+    override fun onVideoFetchError(message: String) {
+        setDetailPageState(ViewState.ErrorOccurred(message))
+    }
+    //endregion
 
     private fun SimpleDraweeView.setBlurryImage(url: String, blurRadious: Int) {
         val uri = Uri.parse(url)

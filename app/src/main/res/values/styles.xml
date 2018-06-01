@@ -11,12 +11,15 @@
     <style name="TransparentStatusbar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
     </style>
 
     <style name="AppThemeWithActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
     </style>
 
 </resources>
