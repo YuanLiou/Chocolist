@@ -29,6 +29,7 @@
 
         <activity
             android:name=".DetailActivity"
+            android:theme="@style/AppThemeWithActionBar"
             android:label="@string/detail_page_title"
             >
 

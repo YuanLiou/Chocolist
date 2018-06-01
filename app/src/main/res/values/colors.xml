@@ -5,7 +5,8 @@
     <color name="colorAccent">#80DEEA</color>
 
     <color name="pure_white">#FFFFFF</color>
-    <color name="gray_EE">#EEEEEE</color>
     <color name="gray_F7">#F7F7F7</color>
+    <color name="gray_EE">#EEEEEE</color>
     <color name="gray_54">#545454</color>
+    <color name="pure_black">#000000</color>
 </resources>

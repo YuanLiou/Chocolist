@@ -2,7 +2,6 @@ package liou.rayyuan.chocolist
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_details.*
 import liou.rayyuan.chocolist.data.entity.Video
 import liou.rayyuan.chocolist.utils.DeepLinkHelper
 
@@ -40,9 +39,5 @@ class DetailActivity: AppCompatActivity() {
     }
 
     private fun printData(video: Video) {
-        detail_test_textView.text = """
-            drama id = ${video.dramaId}, name = ${video.name ?: ""}, create at = ${video.createdAt ?: ""} \n
-            rating = ${video.rating ?: 0.0f}
-            """
     }
 }
